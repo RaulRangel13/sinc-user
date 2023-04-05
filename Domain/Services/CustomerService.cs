@@ -1,5 +1,7 @@
-﻿using Domain.DTOs.Requests;
+﻿using AutoMapper;
+using Domain.DTOs.Requests;
 using Domain.DTOs.Responses;
+using Domain.Entities;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using System;
@@ -13,15 +15,19 @@ namespace Domain.Services
     public class CustomerService : ICustomerService
     {
         private readonly ICustomerRepository _customerRepository;
+        private readonly IMapper _mapper;
 
-        public CustomerService(ICustomerRepository customerRepository)
+        public CustomerService(ICustomerRepository customerRepository, IMapper mapper)
         {
             _customerRepository = customerRepository;
+            _mapper = mapper;
         }
 
         public Task<CustomerResponse> CustomerRegister(CustomerRequestDto customer)
         {
-            throw new NotImplementedException();
+            var t = _mapper.Map<Customer>(customer);
+            _customerRepository.CreateAsync(t).Wait();
+            return null;
         }
     }
 }

@@ -2,6 +2,7 @@
 using Domain.Interfaces.Repositories.Base;
 using Domain.Interfaces.Services;
 using Domain.Services;
+using Infrastructure.AutoMapper;
 using Infrastructure.Persistence.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -27,6 +28,7 @@ namespace UseFul.IoC
         private static void ServicesResolve(IServiceCollection services)
         {
             services.AddTransient<ICustomerService, CustomerService>();
+            services.AddAutoMapper(typeof(Mapper));
         }
     }
 }
