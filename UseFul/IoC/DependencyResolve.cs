@@ -1,4 +1,7 @@
-﻿using Domain.Interfaces.Repositories.Base;
+﻿using Domain.Interfaces.Repositories;
+using Domain.Interfaces.Repositories.Base;
+using Domain.Interfaces.Services;
+using Domain.Services;
 using Infrastructure.Persistence.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -14,10 +17,16 @@ namespace UseFul.IoC
         public static void Instance(IServiceCollection services)
         {
             RepositoriesResolve(services);
+            ServicesResolve(services);
         }
         private static void RepositoriesResolve(IServiceCollection services)
         {
-            services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+            services.AddTransient(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+            services.AddTransient<ICustomerRepository, CustomerRepository>();
+        }
+        private static void ServicesResolve(IServiceCollection services)
+        {
+            services.AddTransient<ICustomerService, CustomerService>();
         }
     }
 }
