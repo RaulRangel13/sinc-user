@@ -1,3 +1,5 @@
+using Infrastructure.Context;
+using Microsoft.EntityFrameworkCore;
 using UseFul.IoC;
 
 namespace AuthenticationApp
@@ -10,6 +12,7 @@ namespace AuthenticationApp
 
             // Add services to the container.
             DependencyResolve.Instance(builder.Services);
+            builder.Services.AddDbContext<SintecProjectContext>(op => op.UseSqlServer(builder.Configuration.GetConnectionString("UserAuthenticationApi")));
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

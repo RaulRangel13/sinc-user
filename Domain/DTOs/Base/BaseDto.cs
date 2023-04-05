@@ -4,12 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Entities.Base
+namespace Domain.DTOs.Base
 {
-    public class BaseEntity
+    public class BaseDto
     {
         public int Id { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime? AlteratedAt { get; set; }
     }
 }
