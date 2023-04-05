@@ -23,20 +23,30 @@ namespace AuthenticationApp.Controllers
         public async Task<ActionResult<IEnumerable<CustomerResponse>>> SignUp([FromBody]CustomerSigUpRequestDto customerRequest)
         {
             var customerResponse = await _customerService.SaveNewCustomer(customerRequest);
-            if(!customerResponse.Sucess)
-                return BadRequest(customerResponse);
+            if(customerResponse.Sucess)
+                return Ok(customerResponse);
 
-            return Ok(customerResponse);
+            return BadRequest(customerResponse);
         }
 
         [HttpPost]
         public async Task<ActionResult<IEnumerable<CustomerResponse>>> SignIn([FromBody] CustomerSigInRequestDto customerRequest)
         {
             var customerLogin = await _customerService.LoginCustomer(customerRequest);
-            if (!customerLogin.Sucess)
-                return BadRequest(customerLogin);
+            if (customerLogin.Sucess)
+                return Ok(customerLogin);
 
-            return Ok(customerLogin);
+            return BadRequest(customerLogin);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<IEnumerable<CustomerResponse>>> RevocerPassword(string email)
+        {
+            var customerResponse = await _customerService.RecoverPassword(email);
+            if (customerResponse.Sucess)
+                return Ok(customerResponse);
+
+            return BadRequest(customerResponse);
         }
     }
 }

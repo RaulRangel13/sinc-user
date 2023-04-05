@@ -28,6 +28,7 @@ namespace UseFul.IoC
         private static void ServicesResolve(IServiceCollection services)
         {
             services.AddTransient<ICustomerService, CustomerService>();
+            services.AddTransient<IEmailService, EmailService>();
             services.AddAutoMapper(typeof(Mapper));
         }
     }

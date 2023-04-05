@@ -12,6 +12,7 @@ namespace Domain.Interfaces.Services
     {
         Task<CustomerResponse> SaveNewCustomer(CustomerSigUpRequestDto customer);
         Task<CustomerResponse> LoginCustomer(CustomerSigInRequestDto customer);
+        Task<CustomerResponse> RecoverPassword(string email);
         Task<bool> HasRegisteredCustomer(string email);
     }
 }
