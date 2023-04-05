@@ -8,8 +8,11 @@ using System.Threading.Tasks;
 
 namespace Domain.DTOs.Requests
 {
-    public class CustomerRequestDto : BaseDto
+    public class CustomerSigUpRequestDto : BaseDto
     {
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        public string Name { get; set; }
+
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         [EmailAddress(ErrorMessage = "O campo {0} é inválido")]
         public string Email { get; set; }

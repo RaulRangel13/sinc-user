@@ -9,13 +9,15 @@ namespace Domain.DTOs.Responses
     public class CustomerResponse
     {
         public string? Email { get; set; }
-        public bool Sucesso { get; private set; }
-        public List<string>? ErrosMessage { get; private set; }
-        public CustomerResponse(bool sucesso = true)
+        public bool Sucess { get; private set; }
+        public List<string>? ErrorsMessage { get; private set; }
+        public CustomerResponse(bool sucess = true)
         {
-            Sucesso = sucesso;
+            Sucess = sucess;
+            if(!sucess)
+                ErrorsMessage = new List<string>();
         }
-        public void AdicionarErros(IEnumerable<string> erros) =>
-            ErrosMessage?.AddRange(erros);
+        public void AddErrors(IEnumerable<string> erros) =>
+            ErrorsMessage?.AddRange(erros);
     }
 }

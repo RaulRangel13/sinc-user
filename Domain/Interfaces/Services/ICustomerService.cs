@@ -10,6 +10,8 @@ namespace Domain.Interfaces.Services
 {
     public interface ICustomerService
     {
-        Task<CustomerResponse> CustomerRegister(CustomerRequestDto customer);
+        Task<CustomerResponse> SaveNewCustomer(CustomerSigUpRequestDto customer);
+        Task<CustomerResponse> LoginCustomer(CustomerSigInRequestDto customer);
+        Task<bool> HasRegisteredCustomer(string email);
     }
 }

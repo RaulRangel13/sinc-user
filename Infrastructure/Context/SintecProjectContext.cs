@@ -24,6 +24,11 @@ namespace Infrastructure.Context
                 .IsUnicode(true);
 
             modelBuilder.Entity<Customer>()
+                .Property(s => s.Name)
+                .HasMaxLength(40)
+                .IsRequired();
+
+            modelBuilder.Entity<Customer>()
                 .Property(s => s.Email)
                 .HasMaxLength(35)
                 .IsRequired();

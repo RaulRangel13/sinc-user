@@ -15,7 +15,7 @@ namespace Infrastructure.AutoMapper
         public Mapper()
         {
             CreateMap<Customer, CustomerResponse>().ReverseMap();
-            CreateMap<CustomerRequestDto, Customer>();
+            CreateMap<CustomerSigUpRequestDto, Customer>();
         }
     }
 }
