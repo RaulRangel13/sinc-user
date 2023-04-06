@@ -1,0 +1,10 @@
+﻿@model LoginModel
+
+<form asp-action="Sigin" method="post" >
+    <label asp-for="Email"></label>
+    <input asp-for="Email" />
+    <label asp-for="Password"></label>
+    <input asp-for="Password" />
+    <span asp-validation-for="Password" class="text-danger"></span>
+    <button type="submit">submite</button>
+</form>

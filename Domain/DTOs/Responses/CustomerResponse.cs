@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.DTOs.Base;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace Domain.DTOs.Responses
 {
-    public class CustomerResponse
+    public class CustomerResponse : BaseDto
     {
+        public string Name { get; set; }
         public string? Email { get; set; }
         public bool Sucess { get; private set; }
         public List<string>? ErrorsMessage { get; private set; }
