@@ -115,6 +115,22 @@ namespace Domain.Services
             return errorResponse;
         }
 
+        public async Task<CustomerResponse> ChangePassword(CustomerPasswordRequestDto customer)
+        {
+            var sigIn = new CustomerSigInRequestDto() { Email = customer.Email, Password = customer.OldPassword };
+            var response = await LoginCustomer(sigIn);
+            if (!response.Sucess)
+                return response;
 
+            var customerEntity = await _customerRepository.GetByEmail(customer.Email);
+            if (customerEntity is null)
+                return ErrorResponse(customer.Email,"Cliente não encontrado");
+
+            customerEntity.Password = customer.NewPassword;
+            HashPasswordGenerate(customerEntity);
+            _customerRepository.UpdateAsync(customerEntity).Wait();
+
+            return response;
+        }
     }
 }

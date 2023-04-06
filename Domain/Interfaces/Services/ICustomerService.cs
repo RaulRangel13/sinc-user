@@ -10,9 +10,12 @@ namespace Domain.Interfaces.Services
 {
     public interface ICustomerService
     {
+
+
+        Task<bool> HasRegisteredCustomer(string email);
+        Task<CustomerResponse> RecoverPassword(string email);
         Task<CustomerResponse> SaveNewCustomer(CustomerSigUpRequestDto customer);
         Task<CustomerResponse> LoginCustomer(CustomerSigInRequestDto customer);
-        Task<CustomerResponse> RecoverPassword(string email);
-        Task<bool> HasRegisteredCustomer(string email);
+        Task<CustomerResponse> ChangePassword(CustomerPasswordRequestDto customer);
     }
 }

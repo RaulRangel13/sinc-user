@@ -48,5 +48,15 @@ namespace AuthenticationApp.Controllers
 
             return BadRequest(customerResponse);
         }
+
+        [HttpPost]
+        public async Task<ActionResult<IEnumerable<CustomerResponse>>> ChangePassword(CustomerPasswordRequestDto customerRequest)
+        {
+            var customerResponse = await _customerService.ChangePassword(customerRequest);
+            if (customerResponse.Sucess)
+                return Ok(customerResponse);
+
+            return BadRequest(customerResponse);
+        }
     }
 }
