@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 
 namespace Domain.DTOs.Requests
 {
-    public class CustomerPasswordRequestDto
+    public class RecoverPasswordRequest
     {
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
-        public string NewPassword { get; set; }
+        public string Email { get; set; }
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        public string BaseUrl { get; set; }
     }
 }

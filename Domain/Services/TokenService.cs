@@ -27,7 +27,7 @@ namespace Domain.Services
 
         public Task<AuthResponse> GenerateTokenAsync(Customer customer)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();            
+            var tokenHandler = new JwtSecurityTokenHandler();
             var expire = DateTime.UtcNow.AddHours(Convert.ToDouble(_authSettings.ExpireIn));
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authSettings.SecretKey));
 
@@ -40,7 +40,8 @@ namespace Domain.Services
                 SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature),
                 Subject = new ClaimsIdentity(new GenericIdentity(customer.Email, JwtBearerDefaults.AuthenticationScheme), new[]
                 {
-                    new Claim(ClaimTypes.NameIdentifier, customer.Id.ToString())
+                    new Claim(ClaimTypes.NameIdentifier, customer.Id.ToString()),
+                    new Claim(ClaimTypes.Name, customer.Name)
                 })
             });
 

@@ -1,106 +1,150 @@
 ﻿@model RegisterModel
 
-<div class="container forget-password">
-    <div class="row">
-        <div class="col-md-12 col-md-offset-4">
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <div class="text-center">
-                        <img src="   https://cdn-icons-png.flaticon.com/512/1000/1000997.png" alt="car-key" border="0">
-                        <h2 class="text-center">Bem Vindo!</h2>
-                        <br />
-                        <form asp-action="SigUp" id="register-form" role="form" autocomplete="off" class="form" method="post">
 
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="glyphicon glyphicon-envelope color-blue"></i></span>
-                                    <input asp-for="Name" id="forgetAnswer" placeholder="Nome" class="form-control">
-                                </div>
-                                <div class="input-group">
-                                    <span asp-validation-for="Name" class="text-danger"></span>
-                                </div>
-                            </div>
+<img src="   https://cdn-icons-png.flaticon.com/512/1000/1000997.png" alt="car-key" border="0">
+<h2 class="text-center">Bem Vindo!</h2>
+<br />
+<form asp-action="SigUp" id="register-form" role="form" autocomplete="off" class="form" method="post">
 
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="glyphicon glyphicon-envelope color-blue"></i></span>
-                                    <input asp-for="Email" id="forgetAnswer" placeholder="E-mail" class="form-control">
-                                </div>
-                                <div class="input-group">
-                                    <span asp-validation-for="Email" class="text-danger"></span>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="glyphicon glyphicon-envelope color-blue"></i></span>
-                                    <input asp-for="Password" id="forgetAnswer" placeholder="Senha" class="form-control">
-                                </div>
-                                <div class="input-group">
-                                    <span asp-validation-for="Password" class="text-danger"></span>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="glyphicon glyphicon-envelope color-blue"></i></span>
-                                    <input asp-for="ConfirmPassword" id="forgetAnswer" placeholder="Confirmar senha" class="form-control">
-                                </div>
-                                <div class="input-group">
-                                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <input name="btnForget" class="btn btn-lg btn-primary btn-block btnForget" value="Cadastrar" type="submit">
-                            </div>
-
-                            <p class="text-center text-muted mt-5 mb-0">
-                                Ja possui uma conta? <a href="@Url.Action("SigIn", "Login")"
-                                                        class="fw-bold text-body"><u>Login</u></a>
-                            </p>
-                        </form>
-                    </div>
-                </div>
-            </div>
+    <div class="form-group">
+        <div class="input-group">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-envelope color-blue"></i></span>
+            <input asp-for="Name" placeholder="Nome" class="form-control">
+        </div>
+        <div class="input-group">
+            <span asp-validation-for="Name" class="text-danger"></span>
         </div>
     </div>
-</div>
-@if (ViewBag.msgError is not null)
-{
-    <script>
-        $(document).ready(function () {
+
+    <div class="form-group">
+        <div class="input-group">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-envelope color-blue"></i></span>
+            <input asp-for="Email" placeholder="E-mail" class="form-control">
+        </div>
+        <div class="input-group">
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div id="password-div" class="input-group">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-envelope color-blue"></i></span>
+            <input asp-for="Password" placeholder="Senha" class="form-control" value="@Model?.Password">
+        </div>
+        <div class="input-group">
+            @*<div id="password-status"></div>*@
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="input-group">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-envelope color-blue"></i></span>
+            <input asp-for="ConfirmPassword" placeholder="Confirmar senha" class="form-control">
+        </div>
+        <div class="input-group">
+            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <input id="buttom-submit" name="btnForget" class="btn btn-lg btn-primary btn-block btnForget" value="Cadastrar" type="submit">
+    </div>
+
+    <p class="text-center text-muted mt-5 mb-0">
+        Ja possui uma conta? <a href="@Url.Action("SigIn", "Login")"
+                                class="fw-bold text-body"><u>Login</u></a>
+    </p>
+</form>
+
+
+<script asp-append-version="true">
+    //$(document).ready(function () {
+    $('form').on('input', 'input', function () {
+
+        if ($(this).attr("name") == "Password")
+            verificaForcaSenha(this)
+
+        $(this).parent().next().find('span').html('');
+    });
+
+    if ($('input[name=Password]').legth) {
+        verificaForcaSenha($('input[name=Password]'))
+    }
+
+    $('#buttom-submit').on('click', function (e) {
+        if (verificaForcaSenha($('input[name=Password]'), true) != 3) {
+            verificaForcaSenha($('input[name=Password]'))
+            e.preventDefault();
+        }
+    });
+
+    @if (ViewBag.msgError is not null)
+    {
+        <text>
             swal.fire({
                 position: "center",
                 icon: "error",
                 text: "@ViewBag.msgError",
                 title: "Erro",
                 showConfirmButton: false,
-                timer: 3000
+                timer: 4500
 
             });
-        });
-    </script>
-}
-<script asp-append-version="true">
-    $(document).ready(function () {
-        $('form').on('input', 'input:text', function () {
-            $(this).parent().next().find('span').html('');
-        });
+        </text>
 
-        @if (ViewBag.msgError is not null){
-            <text>
-                    swal.fire({
-                        position: "center",
-                        icon: "error",
-                        text: "@ViewBag.msgError",
-                        title: "Erro",
-                        showConfirmButton: false,
-                        timer: 4500
+    }
+        //});
 
-                    });
-            </text>
+        function verificaForcaSenha(password, notValidate) {
+            var numeros = /([0-9])/;
+            var alfabeto = /([a-zA-Z])/;
+            var chEspeciais = /^(?=.*[@Html.Raw("@")!#$%^&*()/\\])[@Html.Raw("@")!#$%^&*()/\\a-zA-Z0-9]{8,30}$/;
+            var status;
 
+            if ($(password).val().length < 6) {
+                if (notValidate != true) {
+                    $("#status-password").remove()
+                    $(password).after(`
+                                    <div id="status-password" class="input-group">
+                                        <span style='color:red'>Fraco, insira no mínimo 8 caracteres</span>
+                                    </div>`
+                    );
+                }
+
+                status = 1;
+            }
+            else {
+                if (numeros.test($(password).val()) && alfabeto.test($(password).val()) && chEspeciais.test($(password).val())) {
+                    if (notValidate != true) {
+                        $("#status-password").remove()
+                        $(password).after(`
+                                    <div id="status-password" class="input-group">
+                                        <span style='color:green'>Forte</span>
+                                    </div>`
+                        );
+                    }
+
+
+                    //$('#password-status').html("<span style='color:green'><b>Forte</b></span>");
+
+                    status = 3;
+                } else {
+                    if (notValidate != true) {
+                        $("#status-password").remove()
+                        $(password).after(`
+                                    <div id="status-password" class="input-group">
+                                        <span style='color:orange'>Médio, insira um caracter especial, um número,uma letra minuscula e uma letra maiusla</span>
+                                    </div>`
+                        );
+                    }
+
+
+                    //$('#password-status').html("<span style='color:orange'>Médio, insira um caracter especial</span>");
+                    status = 2;
+                }
+            }
+
+            return status;
         }
-    });
 </script>

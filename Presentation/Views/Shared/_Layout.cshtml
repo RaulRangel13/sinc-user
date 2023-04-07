@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="~/Presentation.styles.css" asp-append-version="true" />
 </head>
 <body>
-    @if (authService.IsLogged())
+@*    @if (authService.IsLogged())
     {
         <header>
             <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
@@ -44,11 +44,30 @@
                 </div>
             </nav>
         </header>
-    }
+    }*@
 
     <div class="container">
         <main role="main" class="pb-3">
-            @RenderBody()
+            <div class="container forget-password">
+                <div class="row">
+                    <div class="col-md-12 col-md-offset-4">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <div class="text-center">
+                                    @if (authService.IsLogged())
+                                    {
+                                        <div style="text-align: right;" class="nav-item">
+                                            <a class="btn btn-danger" asp-area="" asp-controller="Login" asp-action="SigOut">Sair</a>
+                                        </div>
+                                    }
+                                    @RenderBody()
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
 

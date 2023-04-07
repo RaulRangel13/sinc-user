@@ -12,16 +12,16 @@ namespace Presentation.Controllers
 {
     public class LoginController : Controller
     {
-        private readonly IUserService _authService;
+        private readonly IUserService _userService;
         public LoginController(IUserService apiAuthenticationService)
         {
-            _authService = apiAuthenticationService;
+            _userService = apiAuthenticationService;
         }
 
         [HttpGet]
         public async Task<IActionResult> SigIn()
         {
-            if(_authService.IsLogged())
+            if(_userService.IsLogged())
                 return RedirectToAction("Index", "Home");
 
             return View();
@@ -33,11 +33,9 @@ namespace Presentation.Controllers
             try
             {
                 if (!ModelState.IsValid)
-                {
                     return View(model);
-                }
 
-                var loginResponse = await _authService.ApiLoginAsync(model);
+                var loginResponse = await _userService.ApiLoginAsync(model);
                 if (!loginResponse.Sucess)
                 {
                     ModelState.Clear();
@@ -45,7 +43,7 @@ namespace Presentation.Controllers
                     return View(model);
                 }
 
-                await _authService.FrontLoginAsync(HttpContext, loginResponse);
+                await _userService.FrontLoginAsync(HttpContext, loginResponse);
 
                 return RedirectToAction("Index","Home");
             }

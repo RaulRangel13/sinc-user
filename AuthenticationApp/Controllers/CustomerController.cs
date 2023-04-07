@@ -5,11 +5,12 @@ using Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
+using System.Security.Claims;
 
 namespace AuthenticationApp.Controllers
 {
     [Route("api/[controller]/[action]")]
-    //[Authorize]
     [ApiController]
     public class CustomerController : ControllerBase
     {
@@ -44,9 +45,10 @@ namespace AuthenticationApp.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<IEnumerable<CustomerResponse>>> RecoverPassword(string email)
+        public async Task<ActionResult<IEnumerable<CustomerResponse>>> RecoverPassword([FromBody] RecoverPasswordRequest recoverRequest)
         {
-            var customerResponse = await _customerService.RecoverPassword(email);
+            string decodedString = WebUtility.UrlDecode(recoverRequest.BaseUrl);
+            var customerResponse = await _customerService.RecoverPassword(recoverRequest.Email, decodedString);
             if (customerResponse.Sucess)
                 return Ok(customerResponse);
 
@@ -57,19 +59,19 @@ namespace AuthenticationApp.Controllers
         [Authorize]
         public async Task<ActionResult<IEnumerable<CustomerResponse>>> ChangePassword(CustomerPasswordRequestDto customerRequest)
         {
-            var customerResponse = await _customerService.ChangePassword(customerRequest);
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var customerId = identity?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (customerId == null)
+                return BadRequest();
+
+            var customerResponse = await _customerService.ChangePassword(Convert.ToInt32(customerId), customerRequest.NewPassword);
+            _customerService.SetToken(customerResponse, Request); 
             if (customerResponse.Sucess)
                 return Ok(customerResponse);
 
             return Unauthorized(customerResponse);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<AuthResponse>> GenerateToken(CustomerSigInRequestDto customerRequest)
-        {
-            var customerEntity = new Customer() { Email = "raulrange@gmail.com", Id = 10 };
-            var token = await _tokenService.GenerateTokenAsync(customerEntity);
-            return Ok(token);
-        }
+
     }
 }

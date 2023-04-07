@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Presentation.Models;
 using Presentation.Services.Interfaces;
+using System.Net.Http.Headers;
 using System.Reflection;
 using System.Security.Claims;
 using System.Text;
@@ -17,9 +20,49 @@ namespace Presentation.Services
             _user = user;
         }
 
-        public async Task<UserResponse> ApiLoginAsync(LoginModel model)
+        public async Task<UserResponse> ApiChangePasswordAsync(RecoverModel model)
+        {
+            var url = "https://localhost:7086/api/Customer/ChangePassword";
+            var json = $"{{\"newPassword\":\"{model.Password}\"}}";
+            var data = new StringContent(json, Encoding.UTF8, "application/json");
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", model.Token);
+            var response = await client.PostAsync(url, data);
+            return JsonConvert.DeserializeObject<UserResponse>(response.Content.ReadAsStringAsync().Result) ?? new UserResponse();
+        }
+
+        public async Task<UserResponse> AutorizationToken(string token)
+        {
+            var url = "https://localhost:7086/api/Token/AutorizationToken";
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var response = await client.GetAsync(url);
+            return JsonConvert.DeserializeObject<UserResponse>(response.Content.ReadAsStringAsync().Result) ?? new UserResponse();
+        }
+
+        public async Task<UserResponse> ApiRecoverEmailPassAsync(RecoverPasswordModel model)
+        {
+            var url = $"https://localhost:7086/api/Customer/RecoverPassword/";
+            var json = JsonConvert.SerializeObject(model);
+            var data = new StringContent(json, Encoding.UTF8, "application/json");
+            var client = new HttpClient();
+            var response = await client.PostAsync(url, data);
+            return JsonConvert.DeserializeObject<UserResponse>(response.Content.ReadAsStringAsync().Result) ?? new UserResponse();
+        }
+
+        public async Task<UserResponse> ApiTokenLoginAsync(RecoverModel model)
         {
             var url = "https://localhost:7086/api/Customer/SignIn";
+            var json = JsonConvert.SerializeObject(model);
+            var data = new StringContent(json, Encoding.UTF8, "application/json");
+            var client = new HttpClient();
+            var response = await client.PostAsync(url, data);
+            return JsonConvert.DeserializeObject<UserResponse>(response.Content.ReadAsStringAsync().Result) ?? new UserResponse();
+        }
+
+        public async Task<UserResponse> ApiLoginAsync(LoginModel model)
+        {
+            var url = "https://localhost:7086/api/Customer/SigIn";
             var json = JsonConvert.SerializeObject(model);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
             var client = new HttpClient();
@@ -40,7 +83,8 @@ namespace Presentation.Services
         public async Task FrontLoginAsync(HttpContext httpContext, UserResponse loginResponse)
         {
             var claims = new List<Claim>();
-            claims.Add(new Claim(ClaimTypes.Name, loginResponse.Name));
+            claims.Add(new Claim(ClaimTypes.Name, loginResponse.Email));
+            claims.Add(new Claim(ClaimTypes.NameIdentifier, loginResponse.Name));
             claims.Add(new Claim(ClaimTypes.Sid, loginResponse.Id.ToString()));
 
             var userIdentity = new ClaimsIdentity(claims, "Acess");
@@ -56,5 +100,7 @@ namespace Presentation.Services
 
             return true;
         }
+
+
     }
 }

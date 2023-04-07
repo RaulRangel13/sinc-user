@@ -11,6 +11,7 @@ namespace Domain.DTOs.Responses
     {
         public string Name { get; set; }
         public string? Email { get; set; }
+        public string? Token { get; set; }
         public bool Sucess { get; private set; }
         public List<string>? ErrorsMessage { get; private set; }
         public CustomerResponse(bool sucess = true)

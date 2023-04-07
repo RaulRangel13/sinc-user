@@ -10,7 +10,7 @@ namespace Presentation.Models
         public string Name { get; set; }
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
-        [EmailAddress(ErrorMessage = "O campo {0} estaá inválido")]
+        [EmailAddress(ErrorMessage = "O campo {0} está inválido")]
         public string Email { get; set; }
 
         [DisplayName("Senha")]

@@ -5,12 +5,17 @@ using Domain.Entities;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using Domain.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Net.Http.Headers;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Net.Mail;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,42 +27,47 @@ namespace Domain.Services
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
         private readonly IEmailService _emailService;
+        private readonly ITokenService _tokenService;
 
         public CustomerService(IMapper mapper,
             IConfiguration configuration,
             ICustomerRepository customerRepository,
-            IEmailService emailService)
+            IEmailService emailService,
+            ITokenService tokenService)
         {
             _customerRepository = customerRepository;
             _mapper = mapper;
             _configuration = configuration;
             _emailService = emailService;
+            _tokenService = tokenService;
         }
 
         public async Task<bool> HasRegisteredCustomer(string email) =>
             await _customerRepository.HasRegisteredCustomer(email);
 
-        public async Task<CustomerResponse> RecoverPassword(string email)
+        public async Task<CustomerResponse> RecoverPassword(string email, string baseuUrl)
         {
             var customerEntity = await _customerRepository.GetByEmail(email);
             if (customerEntity is null)
                 return ErrorResponse(email, "E-mail não encontrado");
 
-            int passwordLength = 12;
-            string allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{};:,./<>?"; 
+            //int passwordLength = 12;
+            //string allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{};:,./<>?"; 
 
-            Random random = new Random();
-            string password = new string(Enumerable.Repeat(allowedChars, passwordLength).Select(s => s[random.Next(s.Length)]).ToArray());
-            customerEntity.Password = password;
-            HashPasswordGenerate(customerEntity);
+            //Random random = new Random();
+            //string password = new string(Enumerable.Repeat(allowedChars, passwordLength).Select(s => s[random.Next(s.Length)]).ToArray());
+            //customerEntity.Password = password;
+            //HashPasswordGenerate(customerEntity);
 
-            var emailModel = new EmailModel() { Body = $"sua nova senha é {password}", Email = email, Subject = "Recuperação de senha" };
+            var authResponse = await _tokenService.GenerateTokenAsync(customerEntity);
+            var url = $"{baseuUrl}?id={authResponse.Token}";
+            var emailModel = new EmailModel() { Body = $"Para recuperar a senha, acesse o link {url}", Email = email, Subject = "Recuperação de senha" };
             var sucess = _emailService.SendEmail(emailModel);
             if(!sucess)
                 return ErrorResponse(email, "Erro ao enviar o e-mail");
 
-            await _customerRepository.UpdateAsync(customerEntity);
-            return new CustomerResponse() { Email = email};
+            //await _customerRepository.UpdateAsync(customerEntity);
+            return _mapper.Map<CustomerResponse>(customerEntity);
         }
 
         public async Task<CustomerResponse> LoginCustomer(CustomerSigInRequestDto customer)
@@ -69,7 +79,10 @@ namespace Domain.Services
             if (!IsValidPassword(customerEntity, customer.Password))
                 return ErrorResponse(customer.Email, "E-mail ou Senha inválido");
 
-            return _mapper.Map<CustomerResponse>(customerEntity);
+            var customerResponse = _mapper.Map<CustomerResponse>(customerEntity);
+            var authToken = await _tokenService.GenerateTokenAsync(customerEntity);
+            customerResponse.Token = authToken.Token;
+            return customerResponse;
         }
         private bool IsValidPassword(Customer customerEntity, string password)
         {
@@ -99,6 +112,8 @@ namespace Domain.Services
 
             HashPasswordGenerate(customerEntity);
             customerEntity = await _customerRepository.CreateAsync(customerEntity);
+            var emailModel = new EmailModel() { Body = $"olá {customerEntity.Name}, seu cadastro foi realizado com sucesso", Email = customerEntity.Email, Subject = "Boas vindas" };
+            _emailService.SendEmail(emailModel);
             return _mapper.Map<CustomerResponse>(customerEntity);
         }
 
@@ -115,22 +130,45 @@ namespace Domain.Services
             return errorResponse;
         }
 
-        public async Task<CustomerResponse> ChangePassword(CustomerPasswordRequestDto customer)
+        public async Task<CustomerResponse> ChangePassword(int customerId, string password)
         {
-            var sigIn = new CustomerSigInRequestDto() { Email = customer.Email, Password = customer.OldPassword };
-            var response = await LoginCustomer(sigIn);
-            if (!response.Sucess)
-                return response;
+            var customerEntity = await _customerRepository.GetByIdyAsync(customerId); 
+            if (customerEntity == null)
+                return ErrorResponse("", "Cliente não encontrado");
 
-            var customerEntity = await _customerRepository.GetByEmail(customer.Email);
-            if (customerEntity is null)
-                return ErrorResponse(customer.Email,"Cliente não encontrado");
-
-            customerEntity.Password = customer.NewPassword;
+            customerEntity.Password = password;
             HashPasswordGenerate(customerEntity);
             _customerRepository.UpdateAsync(customerEntity).Wait();
 
-            return response;
+            return _mapper.Map<CustomerResponse>(customerEntity);
+        }
+
+        public async Task<CustomerResponse> LoginNoPasswordAsync(int id)
+        {
+            var customerEntity = await _customerRepository.GetByIdyAsync(id);
+            if (customerEntity is null)
+                return ErrorResponse(String.Empty, "Cliente não encontrado");
+
+            var authResponse = await _tokenService.GenerateTokenAsync(customerEntity);
+            var customerResponse = _mapper.Map<CustomerResponse>(customerEntity);
+            customerResponse.Token = authResponse.Token;
+            return customerResponse;
+        }
+
+        public async Task<CustomerResponse> GetCustomerByIdAsync(int id)
+        {
+            var customerEntity = await _customerRepository.GetByIdyAsync(id);
+            if (customerEntity is null)
+                return ErrorResponse(String.Empty, "Cliente não encontrado");
+
+            return _mapper.Map<CustomerResponse>(customerEntity);
+        }
+
+        public void SetToken(CustomerResponse customerResponse, HttpRequest request)
+        {
+            var authorization = request.Headers[HeaderNames.Authorization];
+            AuthenticationHeaderValue.TryParse(authorization, out var headerValue);
+            customerResponse.Token = headerValue?.Parameter;
         }
     }
 }
