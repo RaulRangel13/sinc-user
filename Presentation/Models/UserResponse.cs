@@ -1,8 +1,8 @@
 ﻿namespace Presentation.Models
 {
-    public class LoginResponse
+    public class UserResponse
     {
-        public LoginResponse()
+        public UserResponse()
         {
             ErrorsMessage = new List<string>();
         }

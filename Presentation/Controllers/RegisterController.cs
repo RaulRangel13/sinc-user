@@ -1,38 +1,39 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Presentation.Models;
-using Presentation.Services;
 using Presentation.Services.Interfaces;
-using System.Security.Claims;
-using System.Text;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Presentation.Controllers
 {
-    public class LoginController : Controller
+    public class RegisterController : Controller
     {
         private readonly IUserService _authService;
-        public LoginController(IUserService apiAuthenticationService)
+
+        public RegisterController(IUserService authService)
         {
-            _authService = apiAuthenticationService;
+            _authService = authService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> SigIn()
+        public IActionResult SigUp()
         {
-            if(_authService.IsLogged())
+            if (_authService.IsLogged())
                 return RedirectToAction("Index", "Home");
 
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> SigIn(LoginModel model)
+        public async Task<IActionResult> SigUp(RegisterModel model)
         {
             try
             {
-                var loginResponse = await _authService.ApiLoginAsync(model);
+                if (!ModelState.IsValid)
+                {
+                    return View(model);
+                }
+
+                var loginResponse = await _authService.ApiRegisterAsync(model);
                 if (!loginResponse.Sucess)
                 {
                     ModelState.AddModelError("Password", loginResponse?.ErrorsMessage?.FirstOrDefault() ?? "Erro ao fazer login");
@@ -41,7 +42,7 @@ namespace Presentation.Controllers
 
                 await _authService.FrontLoginAsync(HttpContext, loginResponse);
 
-                return RedirectToAction("Index","Home");
+                return RedirectToAction("Index", "Home");
             }
             catch (Exception e)
             {
@@ -49,12 +50,6 @@ namespace Presentation.Controllers
                 ModelState.AddModelError("Password", "Erro ao fazer login, tente novamente mais tarde");
                 return View(model);
             }
-        }
-
-        public async Task<IActionResult> SigOut()
-        {
-            await HttpContext.SignOutAsync();
-            return Redirect("/");
         }
     }
 }

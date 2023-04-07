@@ -1,4 +1,5 @@
 using Presentation.Services;
+using Presentation.Services.Interfaces;
 
 namespace Presentation
 {
@@ -19,7 +20,7 @@ namespace Presentation
 
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddScoped<AuthUserService>();
-            builder.Services.AddScoped<Presentation.Services.Interfaces.IAuthenticationService, AuthenticationService>();
+            builder.Services.AddScoped<IUserService, UserService>();
 
             var app = builder.Build();
 

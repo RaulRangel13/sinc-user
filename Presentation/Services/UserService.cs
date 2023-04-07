@@ -8,30 +8,36 @@ using System.Text;
 
 namespace Presentation.Services
 {
-    public class AuthenticationService : Presentation.Services.Interfaces.IAuthenticationService
+    public class UserService : IUserService
     {
         private readonly AuthUserService _user;
 
-        public AuthenticationService(AuthUserService user)
+        public UserService(AuthUserService user)
         {
             _user = user;
         }
 
-        public AuthenticationService()
-        {
-        }
-
-        public async Task<LoginResponse> ApiLoginAsync(LoginModel model)
+        public async Task<UserResponse> ApiLoginAsync(LoginModel model)
         {
             var url = "https://localhost:7086/api/Customer/SignIn";
             var json = JsonConvert.SerializeObject(model);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
             var client = new HttpClient();
             var response = await client.PostAsync(url, data);
-            return JsonConvert.DeserializeObject<LoginResponse>(response.Content.ReadAsStringAsync().Result) ?? new LoginResponse();
+            return JsonConvert.DeserializeObject<UserResponse>(response.Content.ReadAsStringAsync().Result) ?? new UserResponse();
         }
 
-        public async Task FrontLoginAsync(HttpContext httpContext, LoginResponse loginResponse)
+        public async Task<UserResponse> ApiRegisterAsync(RegisterModel model)
+        {
+            var url = "https://localhost:7086/api/Customer/SigUp";
+            var json = JsonConvert.SerializeObject(model);
+            var data = new StringContent(json, Encoding.UTF8, "application/json");
+            var client = new HttpClient();
+            var response = await client.PostAsync(url, data);
+            return JsonConvert.DeserializeObject<UserResponse>(response.Content.ReadAsStringAsync().Result) ?? new UserResponse();
+        }
+
+        public async Task FrontLoginAsync(HttpContext httpContext, UserResponse loginResponse)
         {
             var claims = new List<Claim>();
             claims.Add(new Claim(ClaimTypes.Name, loginResponse.Name));
