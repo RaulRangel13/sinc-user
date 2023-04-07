@@ -32,9 +32,15 @@ namespace Presentation.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return View(model);
+                }
+
                 var loginResponse = await _authService.ApiLoginAsync(model);
                 if (!loginResponse.Sucess)
                 {
+                    ModelState.Clear();
                     ModelState.AddModelError("Password", loginResponse?.ErrorsMessage?.FirstOrDefault() ?? "Erro ao fazer login");
                     return View(model);
                 }
@@ -46,7 +52,7 @@ namespace Presentation.Controllers
             catch (Exception e)
             {
                 await HttpContext.SignOutAsync();
-                ModelState.AddModelError("Password", "Erro ao fazer login, tente novamente mais tarde");
+                ViewBag.msgError = "Erro ao fazer login, tente novamente mais tarde";
                 return View(model);
             }
         }

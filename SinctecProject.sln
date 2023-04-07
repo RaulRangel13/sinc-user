@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthenticationApp", "AuthenticationApp\AuthenticationApp.csproj", "{8B3BBA44-C6A3-4F4B-B665-B87A6DB7FB26}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthenticationApp", "AuthenticationApp\AuthenticationApp.csproj", "{8B3BBA44-C6A3-4F4B-B665-B87A6DB7FB26}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{B000AD66-EDB5-42EB-A666-E3D9B022ADFC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{B000AD66-EDB5-42EB-A666-E3D9B022ADFC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UseFul", "UseFul\UseFul.csproj", "{BFA05745-E43D-466F-B1C4-91184B9BB8A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UseFul", "UseFul\UseFul.csproj", "{BFA05745-E43D-466F-B1C4-91184B9BB8A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{DAB5F147-1199-4D7D-8B8C-0EACE6E20557}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{DAB5F147-1199-4D7D-8B8C-0EACE6E20557}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Presentation", "Presentation\Presentation.csproj", "{4C852511-066F-446D-B32C-BA4C47F8BE14}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Presentation", "Presentation\Presentation.csproj", "{4C852511-066F-446D-B32C-BA4C47F8BE14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
