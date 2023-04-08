@@ -21,8 +21,6 @@ namespace Presentation.Controllers
 
         public IActionResult Index()
         {
-            ViewBag.Name = _authUserService.Name;
-            @ViewBag.Email = _authUserService.Email;
             return View();
         }
     }

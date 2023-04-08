@@ -6,6 +6,8 @@ namespace Presentation.Services.Interfaces
     public interface IUserService
     {
         bool IsLogged();
+        Task<bool> ApiGenerateKeyAsync(int id);
+        Task<bool> ApiValidateKeyAsync(TwoFaValidateModel validateModel);
         Task<UserResponse> ApiChangePasswordAsync(RecoverModel model);
         Task<UserResponse> ApiLoginAsync(LoginModel model);
         Task<UserResponse> ApiTokenLoginAsync(RecoverModel model);

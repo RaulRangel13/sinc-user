@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ namespace Infrastructure.Context
         public SintecProjectContext(DbContextOptions<SintecProjectContext> options) : base(options) { }
 
         public DbSet<Customer> Customer { get; set; }
+        public DbSet<TwoFA> TwoFa { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -45,6 +47,7 @@ namespace Infrastructure.Context
             modelBuilder.Entity<Customer>()
                 .Property(s => s.AlteratedAt)
                 .IsRequired(false);
+
         }
     }
 }

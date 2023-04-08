@@ -101,6 +101,32 @@ namespace Presentation.Services
             return true;
         }
 
+        public async Task<bool> ApiGenerateKeyAsync(int id)
+        {
+            var query = new Dictionary<string, string>()
+            {
+                ["id"] = id.ToString()
+            };
+            var url = $"https://localhost:7086/api/TwoFa/GenerateKey/{id}";
+            var client = new HttpClient();
+            var response = await client.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+                return true;
 
+            return false;
+        }
+
+        public async Task<bool> ApiValidateKeyAsync(TwoFaValidateModel validateModel)
+        {
+            var url = "https://localhost:7086/api/TwoFa/ValidateKey";
+            var json = JsonConvert.SerializeObject(validateModel);
+            var data = new StringContent(json, Encoding.UTF8, "application/json");
+            var client = new HttpClient();
+            var response = await client.PostAsync(url, data);
+            if (response.IsSuccessStatusCode)
+                return true;
+
+            return false;
+        }
     }
 }

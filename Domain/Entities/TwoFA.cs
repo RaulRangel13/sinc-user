@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    [Table("Customer")]
-    public class Customer : BaseEntity
+    public class TwoFA : BaseEntity
     {
-        public string Name { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
+        [ForeignKey("Customer")]
+        public int CustomerId { get; set; }
+        public string key { get; set; }
+        public DateTime ExpirtionDate { get; set; }
     }
 }

@@ -24,12 +24,14 @@ namespace UseFul.IoC
         {
             services.AddTransient(typeof(IBaseRepository<>), typeof(BaseRepository<>));
             services.AddTransient<ICustomerRepository, CustomerRepository>();
+            services.AddTransient<ITwoFaRepository, TwoFaRepository>();
         }
         private static void ServicesResolve(IServiceCollection services)
         {
             services.AddTransient<ICustomerService, CustomerService>();
             services.AddTransient<ITokenService, TokenService>();
             services.AddTransient<IEmailService, EmailService>();
+            services.AddTransient<ITwoFAService, TwoFAService>();
             services.AddAutoMapper(typeof(Mapper));
         }
     }
