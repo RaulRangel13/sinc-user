@@ -12,8 +12,8 @@ namespace Domain.Interfaces.Repositories
 {
     public interface ICustomerRepository : IBaseRepository<Customer>
     {
-        Task<bool> HasRegisteredCustomer(string email);
-        Task<Customer?> GetByEmailPassword(string email, string password);
-        Task<Customer?> GetByEmail(string email);
+        Task<Customer?> GetByEmailAsync(string email);
+        Task<bool> HasRegisteredCustomerAsync(string email);
+        Task<Customer?> GetByEmailPasswordAsync(string email, string password);
     }
 }

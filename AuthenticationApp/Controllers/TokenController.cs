@@ -33,7 +33,7 @@ namespace AuthenticationApp.Controllers
         [HttpPost]
         public async Task<ActionResult<AuthResponse>> GenerateToken(CustomerSigInRequestDto customerRequest)
         {
-            var customerResponse = await _customerService.LoginCustomer(customerRequest);
+            var customerResponse = await _customerService.LoginCustomerAsync(customerRequest);
             if (!customerResponse.Sucess)
                 BadRequest(customerResponse);
 

@@ -9,7 +9,7 @@ namespace Domain.Interfaces.Services
 {
     public interface ITwoFAService
     {
-        Task<bool> ValidateKeyAsync(string key, int customerId);
         Task<TwoFA> GenerateKeyAsync(int customerId);
+        Task<bool> ValidateKeyAsync(string key, int customerId);
     }
 }

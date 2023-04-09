@@ -13,11 +13,12 @@ namespace Domain.Interfaces.Services
     {
         Task<CustomerResponse> GetCustomerByIdAsync(int id);
         Task<CustomerResponse> LoginNoPasswordAsync(int id);
-        Task<bool> HasRegisteredCustomer(string email);
-        Task<CustomerResponse> RecoverPassword(string email, string baseUrl);
-        Task<CustomerResponse> SaveNewCustomer(CustomerSigUpRequestDto customer);
-        Task<CustomerResponse> LoginCustomer(CustomerSigInRequestDto customer);
-        Task<CustomerResponse> ChangePassword(int customerId, string password);
+        Task<bool> HasRegisteredCustomerAsync(string email);
         void SetToken(CustomerResponse customerResponse, HttpRequest request);
+        Task<CustomerResponse> RecoverPasswordAsync(string email, string baseUrl);
+        Task<CustomerResponse> LoginCustomerAsync(CustomerSigInRequestDto customer);
+        Task<CustomerResponse> ChangePasswordAsync(int customerId, string password);
+        Task<CustomerResponse> SaveNewCustomerAsync(CustomerSigUpRequestDto customer);
+
     }
 }

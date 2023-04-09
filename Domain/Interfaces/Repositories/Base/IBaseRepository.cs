@@ -8,10 +8,11 @@ namespace Domain.Interfaces.Repositories.Base
 {
     public interface IBaseRepository<T> where T : class
     {
-        Task<IEnumerable<T>> GetAllAsync();
+
         Task<T> GetByIdyAsync(int id);
         Task<T> CreateAsync(T entity);
         Task<T> UpdateAsync(T entity);
         Task<bool> DeleteAsync(int id);
+        Task<IEnumerable<T>> GetAllAsync();
     }
 }

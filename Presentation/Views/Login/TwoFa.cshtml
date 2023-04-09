@@ -1,6 +1,6 @@
 ﻿@model TwoFaModel
 
-<img src="   https://cdn-icons-png.flaticon.com/512/1000/1000997.png" alt="car-key" border="0">
+<img src="https://cdn-icons-png.flaticon.com/512/1000/1000997.png" alt="car-key" border="0">
 <h2 class="text-center">Autenticação</h2>
 <br />
 <form asp-action="TwoFa" id="register-form" role="form" autocomplete="off" class="form" method="post">
@@ -39,7 +39,7 @@
     </div>
 
     <div class="form-group">
-        <input name="btnGenerate" class="btn bg-secondary btn-block btn-lg gradient-custom-4 col-12 text-white" value="Reenviar" type="button" onclick="GenerateKey()">
+        <input name="btnGenerate" class="btn bg-secondary btn-block btn-lg gradient-custom-4 col-12 text-white" value="Reenviar" type="button" >
     </div>
 
 </form>
@@ -51,53 +51,57 @@
             $(this).parent().next().find('span').html('');
         });
 
-        @if (ViewBag.msgError is not null)
-        {
-            <text>
+        $('input[name=btnGenerate]').on('click', function () {
+            $('.field-validation-error').html('');
+            var id = $('#customerId').val();
+            var host = window.location.host;
+            var url = `https://${host}/Login/TwoFaGenerate?id=${id}`;
+            //var indexRemove = url.indexOf('&') == -1 ? 0 : url.indexOf('&');
+            //var uri = url.slice(0, url.indexRemove);
+            //console.log(uri)
+            $.ajax({
+                cache: false,
+                url: url,
+                async: true,
+                data: {},
+                type: "GET",
+                //beforeSend: function () {
+                //    base.startLoad($(element))
+                //},
+                success: function (data) {
+                    $('#keystatus').html('Código enviado com sucesso');
+                },
+                error: function (data) {
                     swal.fire({
                         position: "center",
                         icon: "error",
-                        text: "@ViewBag.msgError",
+                        text: "Ocorreu um erro ao gerar o código, tente novamente mais tarde",
                         title: "Erro",
                         showConfirmButton: false,
                         timer: 4500
-
                     });
-            </text>
+                }
+            });
 
-        }
-    });
+        });
 
-    function GenerateKey(){
-        var id = $('#customerId').val();
-        var url = window.location.href + `Login/TwoFaGenerate?id=${id}`;
-        var indexRemove = url.indexOf('&') == -1 ? 0 : url.indexOf('&');
-        var 
-        console.log(url.slice(0, url.indexRemove))
-        $.ajax({
-            cache: false,
-            url: url.slice(0, url.indexRemove),
-            async: true,
-            data: {},
-            type: "GET",
-            //beforeSend: function () {
-            //    base.startLoad($(element))
-            //},
-            success: function (data) {
-                $('#keystatus').html('Código enviado com sucesso');
-            },
-            error: function (data) {
+    @if (ViewBag.msgError is not null)
+    {
+        <text>
                 swal.fire({
                     position: "center",
                     icon: "error",
-                    text: "Ocorreu um erro ao gerar o código, tente novamente mais tarde",
+                    text: "@ViewBag.msgError",
                     title: "Erro",
                     showConfirmButton: false,
                     timer: 4500
 
                 });
-            }
-        });
-   
+        </text>
+
     }
+
+    });
+
+
 </script>

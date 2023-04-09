@@ -68,7 +68,7 @@ namespace Presentation.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> TwoFaGenerate(int id)
+        public IActionResult TwoFaGenerate(int id)
         {
             if (_userService.ApiGenerateKeyAsync(id).Result)
                 return Ok();

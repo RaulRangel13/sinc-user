@@ -10,7 +10,7 @@ namespace Domain.Interfaces.Repositories
 {
     public interface ITwoFaRepository : IBaseRepository<TwoFA>
     {
-        Task<TwoFA?> GetCustomerKey(string key, int customerId);
-        Task<TwoFA?> GetByCustomer(int customerId);
+        Task<TwoFA?> GetByCustomerAsync(int customerId);
+        Task<TwoFA?> GetCustomerKeyAsync(string key, int customerId);
     }
 }

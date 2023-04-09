@@ -27,7 +27,7 @@ namespace Domain.Services
 
         public async Task<TwoFA> GenerateKeyAsync(int customerId)
         {
-            var twoFa = await _twoFaRepository.GetByCustomer(customerId);
+            var twoFa = await _twoFaRepository.GetByCustomerAsync(customerId);
             if (twoFa is null)
             {
                 var twoFaEntity = new TwoFA()
@@ -50,15 +50,15 @@ namespace Domain.Services
             }
 
             var customerEntity = await _customerService.GetCustomerByIdAsync(customerId);
-            var emailModel = new EmailModel() { Body = $"olá {customerEntity.Name}, seu código de verificação é {twoFa.key}.", Email = customerEntity.Email, Subject = "Código de verificação" };
-            _emailService.SendEmail(emailModel);
+            var emailModel = new EmailModel() { Body = String.Format(Resources.UserMessages.EmailBodyKey, customerEntity.Name, twoFa.key) , Email = customerEntity.Email, Subject = Resources.UserMessages.EmailSubjectKey};
+            _emailService.SendEmailAsync(emailModel);
 
             return twoFa;
         }
 
         public async Task<bool> ValidateKeyAsync(string key, int customerId)
         {
-            var twoFa = await _twoFaRepository.GetCustomerKey(key, customerId);
+            var twoFa = await _twoFaRepository.GetCustomerKeyAsync(key, customerId);
             if (twoFa is null)
                 return false;
 

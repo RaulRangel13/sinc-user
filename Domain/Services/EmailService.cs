@@ -20,7 +20,7 @@ namespace Domain.Services
             _configuration = configuration;
         }
 
-        public bool SendEmail(EmailModel emailModel)
+        public bool SendEmailAsync(EmailModel emailModel)
         {
             try
             {

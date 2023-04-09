@@ -9,6 +9,6 @@ namespace Domain.Interfaces.Services
 {
     public interface IEmailService
     {
-        bool SendEmail(EmailModel emailModel);
+        bool SendEmailAsync(EmailModel emailModel);
     }
 }

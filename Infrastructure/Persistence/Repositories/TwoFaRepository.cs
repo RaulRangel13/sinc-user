@@ -19,10 +19,10 @@ namespace Infrastructure.Persistence.Repositories
         {
             _dbContext = dbContext;
         }
-        public async Task<TwoFA?> GetByCustomer(int customerId) =>
+        public async Task<TwoFA?> GetByCustomerAsync(int customerId) =>
             await _dbContext.Set<TwoFA>().AsNoTracking().FirstOrDefaultAsync(x => x.CustomerId == customerId);
 
-        public async Task<TwoFA?> GetCustomerKey(string key, int customerId) =>
+        public async Task<TwoFA?> GetCustomerKeyAsync(string key, int customerId) =>
             await _dbContext.Set<TwoFA>().AsNoTracking().FirstOrDefaultAsync(x => x.key == key && x.CustomerId == customerId);
     }
 }

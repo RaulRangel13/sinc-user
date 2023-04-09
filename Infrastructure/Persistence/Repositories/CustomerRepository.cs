@@ -18,13 +18,13 @@ namespace Infrastructure.Persistence.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<Customer?> GetByEmail(string email) =>
+        public async Task<Customer?> GetByEmailAsync(string email) =>
             await _dbContext.Set<Customer>().AsNoTracking().FirstOrDefaultAsync(x => x.Email == email);
 
-        public async Task<Customer?> GetByEmailPassword(string email, string password) =>
+        public async Task<Customer?> GetByEmailPasswordAsync(string email, string password) =>
             await _dbContext.Set<Customer>().AsNoTracking().FirstOrDefaultAsync(x => x.Email == email && x.Password == password);
 
-        public async Task<bool> HasRegisteredCustomer(string email) =>
+        public async Task<bool> HasRegisteredCustomerAsync(string email) =>
             _dbContext.Set<Customer>().AsNoTracking().FirstOrDefaultAsync(x => x.Email == email).Result is null ? false : true;
 
     }
